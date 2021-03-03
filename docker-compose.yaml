@@ -1,0 +1,46 @@
+---
+version: "3.8"
+services:
+  api:
+    image: "${registry}/restapi"
+    container_name: movie_api
+    restart: always
+    ports:
+      - "8000:8000"
+    environment:
+      - HOST=database
+      - PORT=3306
+      - DATABASE=${database}
+      - DBUSER=${database_user}
+      - PASSWORD=${database_password}
+    networks:
+      - backend
+    volumes:
+      - images:/app/img
+  web:
+    image: "${registry}/webapp"
+    container_name: movie_app
+    ports:
+      - "80:80"
+  database:
+    image: mariadb
+    restart: always
+    container_name: movie_db
+    environment:
+      - MYSQL_ROOT_PASSWORD=${database_root_password}
+      - MYSQL_DATABASE=${database}
+      - MYSQL_USER=${database_user}
+      - MYSQL_PASSWORD=${database_password}
+    ports:
+      - "3306"
+    networks:
+      - backend
+    volumes:
+      - data:/var/lib/mysql
+
+networks:
+  backend: {}
+
+volumes:
+  data: {}
+  images: {}

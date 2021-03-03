@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <link rel="icon" href="%PUBLIC_URL%/favicon.ico" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#000000" />
+    <meta
+      name="description"
+      content="Web site created using create-react-app"
+    />
+    <link rel="apple-touch-icon" href="%PUBLIC_URL%/logo192.png" />
+    <!--
+      manifest.json provides metadata used when your web app is installed on a
+      user's mobile device or desktop. See https://developers.google.com/web/fundamentals/web-app-manifest/
+    -->
+    <link rel="manifest" href="%PUBLIC_URL%/manifest.json" />
+    <!--
+      Notice the use of %PUBLIC_URL% in the tags above.
+      It will be replaced with the URL of the `public` folder during the build.
+      Only files inside the `public` folder can be referenced from the HTML.
+
+      Unlike "/favicon.ico" or "favicon.ico", "%PUBLIC_URL%/favicon.ico" will
+      work correctly both with client-side routing and a non-root public URL.
+      Learn how to configure a non-root public URL by running `npm run build`.
+    -->
+    <title>React App</title>
+  </head>
+  <body style="overflow-x: hidden;">
+
+    <noscript>You need to enable JavaScript to run this app.</noscript>
+    
+
+    
+      <div id="header" ></div>
+
+      <div id="sidenav"></div>
+        
+      
+      <!-- Page content -->
+      
+        <div id="main" >
+          
+        </div>
+
+      <div id="wrapper" style="position: absolute;height: 100%;background-color:rgba(0,0,0,.5);width: 100%;top:0;left:0;z-index: 3;display: flex;justify-content: center;align-items:center;position: fixed;transition:all .5s;visibility: hidden;opacity: 0;">
+        <div id="edit_container" style="height: 500px;width: 800px;background-color: white;">
+          <div style="height: 25px;">
+            <button type="button" class="close" aria-label="Close" style="margin-top: -5px;" id="closeEdit">
+              <span aria-hidden="true">&times;</span>
+            </button>
+          </div>
+          <div style="float:  left;height: 90%;width: 40%;display: flex;justify-content: center;align-items: center;border-right: 0.5px solid grey;">
+            <div style="height: 350px;width:220px;">
+              <img src="" style="object-fit: cover;height: 100%;width: 100%;" id="movImg" />
+            </div>
+          </div>
+          <div style="float:  left;height: 95%;width: 60%;justify-content: center;align-items: center;display: flex;">
+
+              <form onSubmit="modifyMovie(event)">
+                <div class="form-group">
+                  <label for="movTitle">Movie Title</label>
+                  <input name="title" type="text" class="form-control" id="movTitle" aria-describedby="emailHelp" placeholder="Enter email">
+                </div>
+                <div class="form-group">
+                  <label for="movRating">Ratings</label>
+                  <input name="ratings" class="form-control" type="number" step="0.1" id="movRating" value="5" min="1" max="10">
+                </div>
+                <div class="form-group">
+                  <label for="exampleFormControlSelect1">Example select</label>
+                  <select name="categorie" class="form-control" id="movCat">
+
+                  </select>
+                </div>
+                
+                  <div class="form-group">
+                    <label for="exampleFormControlFile1">Cover Image</label>
+                    <input name="file" type="file" class="form-control-file" id="exampleFormControlFile1">
+                  </div>
+                
+                
+                <button name="idHolder" type="submit"  id="modify" class="btn btn-primary"  >Modify</button>
+              </form>
+            
+          </div>
+        </div>
+      </div>
+
+    
+    <!--
+      This HTML file is a template.
+      If you open it directly in the browser, you will see an empty page.
+
+      You can add webfonts, meta tags, or analytics to this file.
+      The build step will place the bundled scripts into the <body> tag.
+
+      To begin the development, run `npm start` or `yarn start`.
+      To create a production bundle, use `npm run build` or `yarn build`.
+    -->
+  </body>
+  <script src="https://kit.fontawesome.com/c32d485b14.js" crossorigin="anonymous"></script>
+  <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js" integrity="sha384-DfXdz2htPH0lsSSs5nCTpuj/zy4C+OGpamoFVy38MVBnE+IbbVYUew+OrCXaRkfj" crossorigin="anonymous"></script>
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@4.5.3/dist/js/bootstrap.bundle.min.js" integrity="sha384-ho+j7jyWK8fNQe+A12Hb8AhRq26LrZ/JpcUGGOn+Y7RsweNrtN/tE3MoK7ZeZDyx" crossorigin="anonymous"></script>
+
+  <script>
+      function modifyMovie(event){
+        
+        event.preventDefault();
+
+        const files = event.target.file.files
+        const title = event.target.title.value
+        const rating = event.target.ratings.value
+        const category = event.target.categorie.value
+        const id = event.target.idHolder.value
+
+        const old_name = document.getElementById("movImg").src.replace(`http://${window.location.host}:${process.env.REACT_APP_API_PORT}/img/`,'');
+
+
+
+        const formModif = new FormData()
+        formModif.append('title', title)
+        formModif.append('rating', rating)
+        formModif.append('category',category)
+
+    const post_data = (formData) => {
+      console.log("HERE IS THE FORM MODIF : ");
+        console.log(formModif.get('title'));
+        console.log(formModif.get('rating'));
+        console.log(formModif.get('category'));
+        console.log(formModif.get('image'));
+      
+      fetch(`http://${window.location.host}:${process.env.REACT_APP_API_PORT}/movies/`+ id, {
+        method: 'PUT',
+        body: formData
+      })
+      .then(response => response.json())
+      .then(data => { console.log(data); })
+      .catch(error => { console.log(error); })
+    };
+
+    const upload_file = (formData) => {
+	  fetch(`http://${window.location.host}:${process.env.REACT_APP_API_PORT}/upload`, {
+	    method: 'POST',
+		body: formData
+	  })
+	  .then(response => response.json())
+	  .then(data => data.filename)
+      .then(filename => {
+        formModif.append('image',filename);
+ 
+        post_data(formModif);
+      })
+	  .catch(error => { console.error(error) })
+    };
+
+    if (event.target.file.files.length != 0) {
+      let file = new FormData();
+	  file.append('file', files[0]);
+      upload_file(file);
+    }
+    else {
+
+      formModif.append('image', old_name);
+      post_data(formModif);
+    }
+
+    document.getElementById("wrapper").style.opacity = "0";
+    document.getElementById("wrapper").style.visibility = "hidden";
+ 
+    //'http://${window.location.host}:${process.env.REACT_APP_API_PORT}/movies/'+ id
+    //PUT
+    
+          
+      }
+
+  </script>
+</html>
