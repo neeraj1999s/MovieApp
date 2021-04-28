@@ -9,7 +9,7 @@ services:
       - "8000:8000"
     environment:
       - HOST=database
-      - PORT=3306
+      - PORT=3308
       - DATABASE=${database}
       - DBUSER=${database_user}
       - PASSWORD=${database_password}
@@ -32,7 +32,7 @@ services:
       - MYSQL_USER=${database_user}
       - MYSQL_PASSWORD=${database_password}
     ports:
-      - "3306"
+      - "3308"
     networks:
       - backend
     volumes:
