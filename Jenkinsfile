@@ -10,7 +10,7 @@ node {
 	}
 
 	stage("Test") {
-		def PORT = 3308
+		def PORT = 3306
 		def ROOT = "secret_root"
 		def DB	 = "movieapp"
 		def USER = "movieapp"
