@@ -46,16 +46,18 @@ node {
 
 	stage("Run") {
 		try {
-			sshagent(["DevServer"]) {
-				def remote = "${params.remoteUser}@${params.remoteHost}"
-				def option = "-o StrictHostKeyChecking=no"
-				sh "scp ${option} docker-compose.yaml .env ${remote}:~"
-				sh "ssh ${option} ${remote} docker-compose pull"
-				sh "ssh ${option} ${remote} docker-compose up -d"
-			}
+			//sshagent(["DevServer"]) {
+			def remote = "${params.remoteUser}@${params.remoteHost}"
+			def option = "-o StrictHostKeyChecking=no"
+			def privateKey = "~/.ssh/private_key"
+			sh "scp -i ${privateKey} ${option} docker-compose.yaml .env ${remote}:~"
+			sh "ssh -i ${privateKey} ${option} ${remote} docker-compose pull"
+			sh "ssh -i ${privateKey} ${option} ${remote} docker-compose up -d"
+			//}
 		}
 		catch (Exception e) {
-			error "Unable to start services.Probably because something is running on port 80 or 8000."
+			error "${e.getMessage()}"
+			//error "Unable to start services.Probably because something is running on port 80 or 8000."
 		}
 		finally {
 			sh "docker system prune -f"
